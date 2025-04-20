@@ -1,0 +1,45 @@
+# environment.yml file
+name: scivis2026
+channels:
+  - conda-forge
+dependencies:
+  - python=3.8
+  - boto3
+  - colorcet
+  - fsspec
+  - numpy
+  - imageio
+  - pympler=1.0.1
+  - urllib3
+  - pillow
+  - xarray
+  - xmltodict
+  - plotly
+  - requests
+  - scipy
+  - seaborn
+  - tifffile
+  - pandas
+  - matplotlib
+  - cartopy
+  - fastparquet
+  - lxml
+  - numexpr
+  - sqlalchemy
+  - statsmodels
+  - xlrd
+  - intake
+  - ipysheet
+  - ipywidgets
+  - bokeh
+  - openvisuspy
+  - ipywidgets-bokeh
+  - panel
+  - notebook
+  - jupyterlab=3.6.6
+  - jupyter_bokeh
+  - jupyter-server-proxy
+  - jupyterlab-system-monitor
+  - pyviz_comms>=2.0.0,<3.0.0
+  - jupyterlab-pygments>=0.2.0,<0.3.0
+  - OpenVisus
