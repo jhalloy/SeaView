@@ -1,48 +1,27 @@
-# environment.yml file
-name: scivis2026
+name: OpenVisus-NASA
 channels:
   - conda-forge
+  - defaults
 dependencies:
-  - python=3.9
-  - boto3
-  - colorcet
-  - fsspec
-  - numpy
-  - imageio
-  - pympler=1.0.1
-  - urllib3
-  - pillow
-  - xarray
+  - python=3.10
+  - gdal==3.8.4
+  - ipykernel==6.29.2
+  - ipywidgets==8.1.2
   - xmltodict
-  - plotly
   - requests
-  - scipy
-  - seaborn
-  - tifffile
-  - pandas
   - matplotlib
-  - cartopy
-  - fastparquet
-  - lxml
-  - numexpr
-  - sqlalchemy
-  - statsmodels
-  - xlrd
-  - intake
-  - ipysheet
-  - ipywidgets
-  - bokeh
-  - ipywidgets-bokeh
-  - panel==1.3.8
-  - notebook
-  - jupyterlab=3.6.6
-  - jupyter_bokeh
-  - jupyter-server-proxy
-  - jupyterlab-system-monitor
-  - pyviz_comms>=2.0.0,<3.0.0
+  - colorcet
+  - jupyterlab
+  - tifffile
+  - rasterio
+  - imagecodecs
+  - boto3
+  - param==2.0.2
+  - bokeh==3.3.4
+  - ipywidgets-bokeh==1.5.0
   - pip
   - pip:
+      - panel==1.3.8
       - OpenVisusNoGui==2.2.128
-      - OpenVisus==2.2.135
-      - openvisuspy==1.0.36
-      - jupyterlab-pygments
+      - OpenVisus==2.2.134
+      - openvisuspy==1.0.68
