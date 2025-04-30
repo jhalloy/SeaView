@@ -15,6 +15,11 @@ public class Visualizer : MonoBehaviour
     public int gridSizeZ = 10;
     public float spacing = 2f;
 
+    [Header("Colors / Magnitude Range")]
+    public Gradient gradient;
+    public float maxSpeed = 10; // These are used to reference the gradient for coloring (m/s)
+    public float minSpeed = 0;
+
     #endregion
 
     #region Properties
