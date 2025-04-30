@@ -19,14 +19,14 @@ app = Flask(__name__)
 @app.route("/", methods=["GET"])
 def serve_array():
     try:
-        quality = float(request.args.get("quality", 0))
-        z = [float(x) for x in request.args.getlist("z")]
-        time = [float(x) for x in request.args.getlist("time")]
-        x_range = [float(x) for x in request.args.getlist("x_range")]
-        y_range = [float(x) for x in request.args.getlist("y_range")]
+        quality = int(request.args.get("quality", 0))
+        time = int(request.args.get("time", 0))
+        z = [int(x) for x in request.args.getlist("z")]
+        x_range = [int(x) for x in request.args.getlist("x_range")]
+        y_range = [int(x) for x in request.args.getlist("y_range")]
     except Exception as e:
         return jsonify({"error": f"Invalid input parameters {str(e)}"}), 400
-
+    print(f"quality: {quality} time: {time} z: {z} x_range: {x_range} y_range: {y_range}")
     u_array = u_db.db.read(time=time, z=z, x=x_range, y=y_range, quality=quality)
     w_array = w_db.db.read(time=time, z=z, x=x_range, y=y_range, quality=quality)
     v_array = v_db.db.read(time=time, z=z, x=x_range, y=y_range, quality=quality)
