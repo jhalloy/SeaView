@@ -73,3 +73,6 @@
 # Temporary auto-generated Android Assets
 /SeaView Unity/[Aa]ssets/[Ss]treamingAssets/aa.meta
 /SeaView Unity/[Aa]ssets/[Ss]treamingAssets/aa/*
+
+# temporary files downloaded by OpenVisus
+/visus_can_be_deleted/
