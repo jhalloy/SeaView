@@ -1,0 +1,13 @@
+- Get the dataset loading in the Unity project
+	- Interface with python somehow because we need that package
+	- Create a singleton for managing data
+- Design:
+	- Slider for quality of the dataset
+	- Slider for the time? Maybe we can include animated time passing (stretch goal)
+	- Create a vector field showing all of the data points and their velocities
+		- When the user hovers the cursor, datapoints within some distance should be overlayed with their velocity components and the closest point to the cursor should have a more robust overlay with all of it's info
+	- Vectors should be colored based on the magnitude of their velocity
+	- Slider for target depth and another slider for a "radius" of depths we want to see around it (as surrounding depths approach this radius limit, their opacity should approach 0.
+	- Figure out how we will visualize land (if at all). At the very least, should prune datapoints based on salinity level (if at or near 0, we know it's land).
+	- Define some bounds in which the camera must be restricted and this will also serve as the extent of the visualization?
+	- Average velocity over timesteps? (probably not)
