@@ -165,9 +165,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   instanceMesh: {fileID: -7929139438592967118, guid: 2edfd30b92a0f2449b3efc49939b2880, type: 3}
   instanceMaterial: {fileID: 2100000, guid: 64d32b1cae52bdc448dad140fe21ea45, type: 2}
-  gridSizeX: 20
-  gridSizeY: 5
-  gridSizeZ: 20
+  gridSizeX: 100
+  gridSizeY: 20
+  gridSizeZ: 100
   spacing: 2
 --- !u!1 &330585543
 GameObject:
