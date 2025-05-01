@@ -7,6 +7,7 @@ using UnityEngine.Networking;
 using MessagePack;
 using System.Threading.Tasks;
 using MyBox;
+using UltEvents;
 
 [MessagePackObject]
 public class VisusPayload
@@ -45,6 +46,8 @@ public class VisusClient : MonoBehaviour
 {
     public static VisusClient Instance { get; private set;}
 
+    public UltEvent<bool> onLoadingStateChanged; // True if we're waiting on a request, false if not.
+
     const string baseUrl = "http://localhost:5000/";
 
     void Awake()
@@ -63,6 +66,8 @@ public class VisusClient : MonoBehaviour
 
     public async Task<VisusArrays> RequestVisusDataAsync(int quality, int time, int[] z, int[] x_range, int[] y_range)
     {
+        onLoadingStateChanged?.Invoke(true);
+
         string url = BuildQueryUrl(quality, time, z, x_range, y_range);
         using UnityWebRequest request = UnityWebRequest.Get(url);
         request.downloadHandler = new DownloadHandlerBuffer();
@@ -92,29 +97,11 @@ public class VisusClient : MonoBehaviour
             }
         };
 
-        return await tcs.Task;
+        VisusArrays rv = await tcs.Task;
 
-        // var operation = request.SendWebRequest();
+        onLoadingStateChanged?.Invoke(false);
 
-        // while (!operation.isDone)
-        //     await Task.Yield();
-
-        // if (request.result != UnityWebRequest.Result.Success)
-        //     throw new Exception(request.error);
-
-        // byte[] rawData = request.downloadHandler.data;
-        
-        // VisusPayload payload = MessagePackSerializer.Deserialize<VisusPayload>(rawData);
-        // float[] u = ByteArrayToFloatArray(payload.u_array);
-        // float[] v = ByteArrayToFloatArray(payload.v_array);
-        // float[] w = ByteArrayToFloatArray(payload.w_array);
-
-        // // Debug prints
-        // Debug.Log($"u[0] = {u[0]}");
-        // Debug.Log($"v[0] = {v[0]}");
-        // Debug.Log($"w[0] = {w[0]}");
-
-        // return new VisusArrays(payload.shape, u, v, w);
+        return rv;
     }
 
     //public VisusArrays RequestVisusData(int quality, int time, int[] z, int[] x_range, int[] y_range) {
