@@ -235,6 +235,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   loadingText: {fileID: 50730059}
+  loadingMessage: Loading data
   loadingInterval: 0.2
   loadingFadeTime: 0.3
 --- !u!1 &50730057
@@ -419,9 +420,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   instanceMesh: {fileID: -7929139438592967118, guid: 2edfd30b92a0f2449b3efc49939b2880, type: 3}
   instanceMaterial: {fileID: 2100000, guid: 64d32b1cae52bdc448dad140fe21ea45, type: 2}
-  gridSizeX: 10
-  gridSizeY: 5
-  gridSizeZ: 10
   spacing: 1
   gradient:
     serializedVersion: 2
@@ -891,10 +889,10 @@ Transform:
 SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
+  - {fileID: 2056712022}
+  - {fileID: 290230459}
   - {fileID: 330585546}
   - {fileID: 410087041}
   - {fileID: 832575519}
-  - {fileID: 290230459}
-  - {fileID: 2056712022}
   - {fileID: 31006587}
   - {fileID: 1874858956}

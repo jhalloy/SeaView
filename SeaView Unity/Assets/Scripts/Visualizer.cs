@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 public class Visualizer : MonoBehaviour
 {
@@ -8,12 +9,10 @@ public class Visualizer : MonoBehaviour
     [Header("Mesh & Material")]
     public Mesh instanceMesh;
     public Material instanceMaterial;
+    public float meshScale = 1f;
 
     [Header("Grid Settings")]
-    public int gridSizeX = 10;
-    public int gridSizeY = 5;
-    public int gridSizeZ = 10;
-    public float spacing = 2f;
+    public float spacing = 1f;
 
     [Header("Colors / Magnitude Range")]
     public Gradient gradient;
@@ -26,6 +25,8 @@ public class Visualizer : MonoBehaviour
 
     private List<Matrix4x4[]> batches = new List<Matrix4x4[]>();
     private const int batchSize = 1023; // Max allowed per DrawMeshInstanced call
+
+    private VisusClient visusClient => VisusClient.Instance;
 
     #endregion
 
@@ -48,29 +49,47 @@ public class Visualizer : MonoBehaviour
 
     #region Methods
 
-    void GenerateGrid()
+    // Gets the data from the API client and builds the grid.
+    private async void GenerateGrid()
     {
         List<Matrix4x4> allMatrices = new List<Matrix4x4>();
 
-        for (int x = 0; x < gridSizeX; x++)
+        // Get the data
+        await Task.Run(async () => 
         {
-            for (int y = 0; y < gridSizeY; y++)
+            var data = await visusClient.RequestVisusDataAsync(
+                quality: 0, 
+                time: 0, 
+                z: new int[] { 0, 1 },
+                x_range: new int[] { 0, 200 },
+                y_range: new int[] { 0, 200 }
+            );
+
+            float[] u = data.u;
+            float[] v = data.v;
+            float[] w = data.w;
+
+            for (int x = 0; x < u.Length; x++)
             {
-                for (int z = 0; z < gridSizeZ; z++)
+                for (int y = 0; y < v.Length; y++)
                 {
-                    Vector3 position = new Vector3(x * spacing, y * spacing, z * spacing);
-                    Matrix4x4 matrix = Matrix4x4.TRS(position, Quaternion.identity, Vector3.one);
-                    allMatrices.Add(matrix);
+                    for (int z = 0; z < w.Length; z++)
+                    {
+                        Debug.Log($"{x}, {y}, {z}");
+                        Vector3 position = new Vector3(x * spacing, y * spacing, z * spacing);
+                        Matrix4x4 matrix = Matrix4x4.TRS(position, Quaternion.LookRotation(new Vector3(u[x], v[y], w[z]).normalized, Vector3.up), Vector3.one * meshScale);
+                        allMatrices.Add(matrix);
+                    }
                 }
             }
-        }
 
-        // Split into batches of 1023
-        for (int i = 0; i < allMatrices.Count; i += batchSize)
-        {
-            int count = Mathf.Min(batchSize, allMatrices.Count - i);
-            batches.Add(allMatrices.GetRange(i, count).ToArray());
-        }
+            // Split into batches of 1023 (the max number of instances we can draw)
+            for (int i = 0; i < allMatrices.Count; i += batchSize)
+            {
+                int count = Mathf.Min(batchSize, allMatrices.Count - i);
+                batches.Add(allMatrices.GetRange(i, count).ToArray());
+            }
+        });        
     }
 
     #endregion

@@ -19,6 +19,8 @@ public class UIManager : MonoBehaviour
 
     private VisusClient visusClient => VisusClient.Instance;
 
+    #region Mono
+
     void Start()
     {
         loadingText.alpha = 0;
@@ -26,6 +28,10 @@ public class UIManager : MonoBehaviour
         // Bind to client load event for loading text.
         visusClient.onLoadingStateChanged += OnLoadingStateChanged;
     }
+
+    #endregion
+
+    #region Loading
 
     private void OnLoadingStateChanged(bool newState)
     {
@@ -61,4 +67,6 @@ public class UIManager : MonoBehaviour
             yield return new WaitForSeconds(loadingInterval);
         }
     }
+
+    #endregion
 }

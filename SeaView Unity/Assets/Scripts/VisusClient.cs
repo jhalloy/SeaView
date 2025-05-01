@@ -50,6 +50,8 @@ public class VisusClient : MonoBehaviour
 
     const string baseUrl = "http://localhost:5000/";
 
+    #region Mono
+
     void Awake()
     {
         if (Instance == null)
@@ -63,6 +65,10 @@ public class VisusClient : MonoBehaviour
             return;
         }
     }
+
+    #endregion
+
+    #region Public Methods
 
     public async Task<VisusArrays> RequestVisusDataAsync(int quality, int time, int[] z, int[] x_range, int[] y_range)
     {
@@ -104,9 +110,9 @@ public class VisusClient : MonoBehaviour
         return rv;
     }
 
-    //public VisusArrays RequestVisusData(int quality, int time, int[] z, int[] x_range, int[] y_range) {
-    //    StartCoroutine(RequestVisusData_coroutine(quality, time, z, x_range, y_range));
-    //}
+    #endregion
+
+    #region Private Methods
 
     string BuildQueryUrl(int quality, int time, int[] z, int[] x_range, int[] y_range)
     {
@@ -143,4 +149,6 @@ public class VisusClient : MonoBehaviour
             y_range: new int[] { 0, 200 }
         );
     }
+
+    #endregion
 }
