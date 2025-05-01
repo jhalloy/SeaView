@@ -10,6 +10,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI loadingText;
 
     [Header("Loading")]
+    [SerializeField] private string loadingMessage = "Loading data";
     [SerializeField] private float loadingInterval = .3f;
     [SerializeField] private float loadingFadeTime = .3f;
     private bool isLoading = false;
@@ -55,7 +56,7 @@ public class UIManager : MonoBehaviour
 
         while (true)
         {
-            loadingText.text = $"Loading{ellipses[i]}";
+            loadingText.text = $"{loadingMessage}{ellipses[i]}";
             i = (i + 1) % ellipses.Length;
             yield return new WaitForSeconds(loadingInterval);
         }
