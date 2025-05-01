@@ -85,8 +85,6 @@ public class Visualizer : MonoBehaviour
             var u = new NDArray(data.u).reshape(data.shape);
             var v = new NDArray(data.v).reshape(data.shape);
             var w = new NDArray(data.w).reshape(data.shape);
-            
-
 
             for (int x = 0; x < data.shape[2]; x++)
             {
