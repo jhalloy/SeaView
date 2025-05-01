@@ -7,6 +7,11 @@ ModelImporter:
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
+      name: ArrowMat
+    second: {fileID: 2100000, guid: 64d32b1cae52bdc448dad140fe21ea45, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
       name: VectorMat
     second: {fileID: 2100000, guid: 64d32b1cae52bdc448dad140fe21ea45, type: 2}
   materials:

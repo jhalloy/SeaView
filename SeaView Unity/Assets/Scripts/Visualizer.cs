@@ -13,24 +13,31 @@ public class Visualizer : MonoBehaviour
     #region Fields
 
     [Header("Mesh & Material")]
-    public Mesh instanceMesh;
+    public Mesh arrowMesh;
+    public float arrowScale = 1f;
+    public Mesh landMesh;
+    public float landScale = 1f;
     public Material instanceMaterial;
-    public float meshScale = 1f;
 
     [Header("Grid Settings")]
     public float spacing = 1f;
 
     [Header("Colors / Magnitude Range")]
-    public Gradient gradient;
+    public Gradient velocityGradient;
+    public Color landColor = Color.green;
     public float maxSpeed = 10; // These are used to reference the gradient for coloring (m/s)
-    public float minSpeed = 0;
+    private const float minSpeed = 0;
 
     #endregion
 
     #region Properties
 
-    private List<Matrix4x4[]> batches = new List<Matrix4x4[]>();
+    private List<Matrix4x4[]> arrowBatches = new List<Matrix4x4[]>();
+    private List<Matrix4x4[]> tempArrowBatches = new List<Matrix4x4[]>();
+    private List<Matrix4x4[]> landBatches = new List<Matrix4x4[]>();
+    private List<Matrix4x4[]> tempLandBatches = new List<Matrix4x4[]>();
     private const int batchSize = 1023; // Max allowed per DrawMeshInstanced call
+    private List<MaterialPropertyBlock> propBlocks = new List<MaterialPropertyBlock>();
 
     private VisusClient visusClient => VisusClient.Instance;
 
@@ -54,9 +61,13 @@ public class Visualizer : MonoBehaviour
 
     void Update()
     {
-        foreach (var batch in batches)
+        for (int i = 0; i < arrowBatches.Count; i++)
         {
-            Graphics.DrawMeshInstanced(instanceMesh, 0, instanceMaterial, batch);
+            Graphics.DrawMeshInstanced(arrowMesh, 0, instanceMaterial, arrowBatches[i], arrowBatches[i].Length, propBlocks[i]);
+        }
+        foreach (var batch in landBatches)
+        {
+            Graphics.DrawMeshInstanced(landMesh, 0, instanceMaterial, batch);
         }
     }
 
@@ -69,7 +80,9 @@ public class Visualizer : MonoBehaviour
     {
         onLoadingStateChanged?.Invoke(true);
 
-        List<Matrix4x4> allMatrices = new List<Matrix4x4>();
+        List<Matrix4x4> arrowMatrices = new List<Matrix4x4>();
+        List<Vector4> arrowColors = new List<Vector4>();
+        List<Matrix4x4> landMatrices = new List<Matrix4x4>();
 
         var data = await visusClient.RequestVisusDataAsync(
             quality: -9, 
@@ -94,20 +107,50 @@ public class Visualizer : MonoBehaviour
                     {
                         // Debug.Log($"{x}, {y}, {z}");
 
+                        Vector3 vel = new Vector3(u[z][y][x], v[z][y][x], w[z][y][x]);
+
                         Vector3 position = new Vector3(x * spacing, z * spacing, y * spacing);
-                        Matrix4x4 matrix = Matrix4x4.TRS(position, Quaternion.LookRotation(new Vector3(u[z][y][x], v[z][y][x], w[z][y][x]).normalized, Vector3.up), Vector3.one * meshScale);
-                        allMatrices.Add(matrix);
+
+                        if (vel.magnitude > 0)
+                        {
+                            Matrix4x4 matrix = Matrix4x4.TRS(position, Quaternion.LookRotation(vel.normalized, Vector3.up), Vector3.one * arrowScale);
+                            arrowMatrices.Add(matrix);
+
+                            float speed = vel.magnitude;
+                            float t = Mathf.Clamp01(Mathf.Min(speed, maxSpeed) / maxSpeed);
+                            Color color = velocityGradient.Evaluate(t);
+                            arrowColors.Add(color);
+                        }
+                        else
+                        {
+                            Matrix4x4 matrix = Matrix4x4.TRS(position, Quaternion.identity, Vector3.one * landScale);
+                            landMatrices.Add(matrix);
+                        }
                     }
                 }
             }
 
             // Split into batches of 1023 (the max number of instances we can draw)
-            for (int i = 0; i < allMatrices.Count; i += batchSize)
+            tempArrowBatches.Clear();
+            for (int i = 0; i < arrowMatrices.Count; i += batchSize)
             {
-                int count = Mathf.Min(batchSize, allMatrices.Count - i);
-                batches.Add(allMatrices.GetRange(i, count).ToArray());
+                int count = Mathf.Min(batchSize, arrowMatrices.Count - i);
+                tempArrowBatches.Add(arrowMatrices.GetRange(i, count).ToArray());
+
+                MaterialPropertyBlock props = new MaterialPropertyBlock();
+                props.SetVectorArray("_Color", arrowColors.GetRange(i, count));
+                propBlocks.Add(props);
+            }
+            tempLandBatches.Clear();
+            for (int i = 0; i < landMatrices.Count; i += batchSize)
+            {
+                int count = Mathf.Min(batchSize, landMatrices.Count - i);
+                tempLandBatches.Add(landMatrices.GetRange(i, count).ToArray());
             }
         });
+
+        arrowBatches = tempArrowBatches;
+        landBatches = tempLandBatches;
 
         onLoadingStateChanged?.Invoke(false); 
     }
