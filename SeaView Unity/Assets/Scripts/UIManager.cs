@@ -17,7 +17,7 @@ public class UIManager : MonoBehaviour
     private Tween loadingFadeTween;
     private Coroutine loadingCoroutine;
 
-    private VisusClient visusClient => VisusClient.Instance;
+    private Visualizer visualizer => Visualizer.Instance;
 
     #region Mono
 
@@ -26,7 +26,7 @@ public class UIManager : MonoBehaviour
         loadingText.alpha = 0;
 
         // Bind to client load event for loading text.
-        visusClient.onLoadingStateChanged += OnLoadingStateChanged;
+        visualizer.onLoadingStateChanged += OnLoadingStateChanged;
     }
 
     #endregion
@@ -37,7 +37,7 @@ public class UIManager : MonoBehaviour
     {
         if (isLoading == newState) return;
 
-        Debug.Log($"Loading = {newState}");
+        // Debug.Log($"Loading = {newState}");
 
         isLoading = newState;
 

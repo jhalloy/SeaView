@@ -418,8 +418,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e8dcdc0c21e5563489ab9ec09b06b799, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  onLoadingStateChanged:
+    _PersistentCalls: []
   instanceMesh: {fileID: -7929139438592967118, guid: 2edfd30b92a0f2449b3efc49939b2880, type: 3}
   instanceMaterial: {fileID: 2100000, guid: 64d32b1cae52bdc448dad140fe21ea45, type: 2}
+  meshScale: 1
   spacing: 1
   gradient:
     serializedVersion: 2
@@ -540,7 +543,7 @@ Transform:
   m_GameObject: {fileID: 330585543}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: -10}
+  m_LocalPosition: {x: 5.21, y: 1, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -868,8 +871,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8b2fecce6fee2534389d8967380b06a9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  onLoadingStateChanged:
-    _PersistentCalls: []
 --- !u!4 &2056712022
 Transform:
   m_ObjectHideFlags: 0

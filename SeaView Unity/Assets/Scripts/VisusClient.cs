@@ -46,8 +46,6 @@ public class VisusClient : MonoBehaviour
 {
     public static VisusClient Instance { get; private set;}
 
-    public UltEvent<bool> onLoadingStateChanged; // True if we're waiting on a request, false if not.
-
     const string baseUrl = "http://localhost:5000/";
 
     #region Mono
@@ -72,8 +70,6 @@ public class VisusClient : MonoBehaviour
 
     public async Task<VisusArrays> RequestVisusDataAsync(int quality, int time, int[] z, int[] x_range, int[] y_range)
     {
-        onLoadingStateChanged?.Invoke(true);
-
         string url = BuildQueryUrl(quality, time, z, x_range, y_range);
         using UnityWebRequest request = UnityWebRequest.Get(url);
         request.downloadHandler = new DownloadHandlerBuffer();
@@ -104,8 +100,6 @@ public class VisusClient : MonoBehaviour
         };
 
         VisusArrays rv = await tcs.Task;
-
-        onLoadingStateChanged?.Invoke(false);
 
         return rv;
     }
