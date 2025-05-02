@@ -17,16 +17,16 @@ public class Visualizer : MonoBehaviour
     public float arrowScale = 1f;
     public Mesh landMesh;
     public float landScale = 1f;
-    public Material instanceMaterial;
+    public Material arrowMaterial;
+    public Material landMaterial;
 
     [Header("Grid Settings")]
     public float spacing = 1f;
 
     [Header("Colors / Magnitude Range")]
     public Gradient velocityGradient;
-    public Color landColor = Color.green;
-    public float maxSpeed = 10; // These are used to reference the gradient for coloring (m/s)
-    private const float minSpeed = 0;
+    // public Color landColor = Color.green;
+    [HideInInspector] public float maxSpeed = float.MinValue; // used to reference the gradient for coloring (m/s)
 
     #endregion
 
@@ -56,6 +56,8 @@ public class Visualizer : MonoBehaviour
 
     void Start()
     {
+        maxSpeed = float.MinValue;
+
         GenerateGrid();
     }
 
@@ -63,11 +65,11 @@ public class Visualizer : MonoBehaviour
     {
         for (int i = 0; i < arrowBatches.Count; i++)
         {
-            Graphics.DrawMeshInstanced(arrowMesh, 0, instanceMaterial, arrowBatches[i], arrowBatches[i].Length, propBlocks[i]);
+            Graphics.DrawMeshInstanced(arrowMesh, 0, arrowMaterial, arrowBatches[i], arrowBatches[i].Length, propBlocks[i]);
         }
         foreach (var batch in landBatches)
         {
-            Graphics.DrawMeshInstanced(landMesh, 0, instanceMaterial, batch);
+            Graphics.DrawMeshInstanced(landMesh, 0, landMaterial, batch);
         }
     }
 
@@ -81,6 +83,7 @@ public class Visualizer : MonoBehaviour
         onLoadingStateChanged?.Invoke(true);
 
         List<Matrix4x4> arrowMatrices = new List<Matrix4x4>();
+        List<float> speeds = new List<float>();
         List<Vector4> arrowColors = new List<Vector4>();
         List<Matrix4x4> landMatrices = new List<Matrix4x4>();
 
@@ -117,9 +120,8 @@ public class Visualizer : MonoBehaviour
                             arrowMatrices.Add(matrix);
 
                             float speed = vel.magnitude;
-                            float t = Mathf.Clamp01(Mathf.Min(speed, maxSpeed) / maxSpeed);
-                            Color color = velocityGradient.Evaluate(t);
-                            arrowColors.Add(color);
+                            maxSpeed = Mathf.Max(speed, maxSpeed);
+                            speeds.Add(speed);
                         }
                         else
                         {
@@ -136,10 +138,6 @@ public class Visualizer : MonoBehaviour
             {
                 int count = Mathf.Min(batchSize, arrowMatrices.Count - i);
                 tempArrowBatches.Add(arrowMatrices.GetRange(i, count).ToArray());
-
-                MaterialPropertyBlock props = new MaterialPropertyBlock();
-                props.SetVectorArray("_Color", arrowColors.GetRange(i, count));
-                propBlocks.Add(props);
             }
             tempLandBatches.Clear();
             for (int i = 0; i < landMatrices.Count; i += batchSize)
@@ -149,8 +147,25 @@ public class Visualizer : MonoBehaviour
             }
         });
 
+        // Material blocks
+        foreach (var speed in speeds)
+        {
+            float t = Mathf.Clamp01(Mathf.Min(speed, maxSpeed) / maxSpeed);
+            Color color = velocityGradient.Evaluate(t);
+            arrowColors.Add(color);
+        }
+        for (int i = 0; i < arrowMatrices.Count; i += batchSize)
+        {
+            int count = Mathf.Min(batchSize, arrowMatrices.Count - i);
+            MaterialPropertyBlock props = new MaterialPropertyBlock();
+            props.SetVectorArray("_Color", arrowColors.GetRange(i, count));
+            propBlocks.Add(props);
+        }
+
         arrowBatches = tempArrowBatches;
         landBatches = tempLandBatches;
+
+        Debug.Log($"Max Speed from batch: {maxSpeed}");
 
         onLoadingStateChanged?.Invoke(false); 
     }

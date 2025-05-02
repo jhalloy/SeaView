@@ -421,14 +421,15 @@ MonoBehaviour:
   onLoadingStateChanged:
     _PersistentCalls: []
   arrowMesh: {fileID: -7929139438592967118, guid: 2edfd30b92a0f2449b3efc49939b2880, type: 3}
-  arrowScale: 1
+  arrowScale: 0.5
   landMesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
-  landScale: 1
-  instanceMaterial: {fileID: 2100000, guid: 64d32b1cae52bdc448dad140fe21ea45, type: 2}
-  spacing: 1
+  landScale: 0.4
+  arrowMaterial: {fileID: 2100000, guid: 64d32b1cae52bdc448dad140fe21ea45, type: 2}
+  landMaterial: {fileID: 2100000, guid: 5e356fb7141dd6848bbcc658f7b4a14b, type: 2}
+  spacing: 0.5
   velocityGradient:
     serializedVersion: 2
-    key0: {r: 0.18553454, g: 0.18553454, b: 1, a: 1}
+    key0: {r: 0.7652211, g: 1, b: 0.18431371, a: 1}
     key1: {r: 1, g: 0, b: 0, a: 1}
     key2: {r: 0, g: 0, b: 0, a: 0}
     key3: {r: 0, g: 0, b: 0, a: 0}
@@ -452,13 +453,11 @@ MonoBehaviour:
     atime5: 0
     atime6: 0
     atime7: 0
-    m_Mode: 2
+    m_Mode: 0
     m_ColorSpace: 0
     m_NumColorKeys: 2
     m_NumAlphaKeys: 2
-  landColor: {r: 0, g: 0.7924528, b: 0, a: 1}
-  maxSpeed: 10
-  minSpeed: 0
+  maxSpeed: 5.5
 --- !u!1 &330585543
 GameObject:
   m_ObjectHideFlags: 0
