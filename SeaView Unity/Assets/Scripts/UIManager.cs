@@ -54,7 +54,7 @@ public class UIManager : MonoBehaviour
         // Bind to client load event for loading text.
         visualizer.onLoadingStateChanged += OnLoadingStateChanged;
 
-        visualizer.onUpdatedVisuals += UpdateLegend;
+        visualizer.onUpdatedVisuals += VisualizationUpdated;
 
         // Quality stuff
         UpdateQuality();
@@ -138,6 +138,31 @@ public class UIManager : MonoBehaviour
     private void OnVisualize()
     {
         visualizer.Visualize();
+
+        visualizeButton.interactable = false;
+    }
+
+    private void VisualizationUpdated()
+    {
+        legendRootObject.SetActive(true);
+
+        // Show/update the legend
+        legendMinText.text = "0";
+        legendMaxText.text = $"{maxSpeed:F2}";
+
+        Texture2D tex = new Texture2D(1, textureSize, TextureFormat.RGBA32, false);
+        tex.wrapMode = TextureWrapMode.Clamp;
+
+        for (int y = 0; y < textureSize; y++)
+        {
+            Color color = gradient.Evaluate((float)y / (textureSize - 1));
+            tex.SetPixel(0, y, color);
+        }
+
+        tex.Apply();
+        legendImage.texture = tex;
+
+        visualizeButton.interactable = true;
     }
 
     #endregion
@@ -209,31 +234,6 @@ public class UIManager : MonoBehaviour
         maxSlider.minValue = min + 1;
 
         maxSlider.value = max;
-    }
-
-    #endregion
-
-    #region Legend
-
-    private void UpdateLegend()
-    {
-        legendRootObject.SetActive(true);
-
-        // Show/update the legend
-        legendMinText.text = "0";
-        legendMaxText.text = $"{maxSpeed:F2}";
-
-        Texture2D tex = new Texture2D(1, textureSize, TextureFormat.RGBA32, false);
-        tex.wrapMode = TextureWrapMode.Clamp;
-
-        for (int y = 0; y < textureSize; y++)
-        {
-            Color color = gradient.Evaluate((float)y / (textureSize - 1));
-            tex.SetPixel(0, y, color);
-        }
-
-        tex.Apply();
-        legendImage.texture = tex;
     }
 
     #endregion
