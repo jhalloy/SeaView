@@ -3,10 +3,13 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using UltEvents;
 using NumSharp;
+using System.Diagnostics;
 
 public class Visualizer : MonoBehaviour
 {
     public UltEvent<bool> onLoadingStateChanged; // True if we're waiting on a request, false if not.
+
+    public UltEvent onUpdatedVisuals;
 
     public static Visualizer Instance;
 
@@ -41,6 +44,13 @@ public class Visualizer : MonoBehaviour
 
     private VisusClient visusClient => VisusClient.Instance;
 
+    // Updated by the UIManager for visualization
+    [HideInInspector] public int quality = 0;
+    [HideInInspector] public int time = 0; // 0 = Jan 20th 2020 12am
+    [HideInInspector] public int[] z = {0, 1}; // min and max
+    [HideInInspector] public int[] xRange = {0, 200}; // min and max
+    [HideInInspector] public int[] yRange = {1000, 1200}; // min and max
+
     #endregion
 
     #region Mono
@@ -52,13 +62,19 @@ public class Visualizer : MonoBehaviour
             Destroy(Instance.gameObject);
         }
         Instance = this;
+
+        quality = 0;
+        time = 0;
+        z = new int[] {0, 1};
+        xRange = new int[] {0, 200};
+        yRange = new int[] {1000, 1200};
     }
 
     void Start()
     {
         maxSpeed = float.MinValue;
 
-        GenerateGrid();
+        // Visualize();
     }
 
     void Update()
@@ -78,8 +94,10 @@ public class Visualizer : MonoBehaviour
     #region Methods
 
     // Gets the data from the API client and builds the grid.
-    private async void GenerateGrid()
+    public async void Visualize()
     {
+        Stopwatch stopwatch = Stopwatch.StartNew();
+
         onLoadingStateChanged?.Invoke(true);
 
         List<Matrix4x4> arrowMatrices = new List<Matrix4x4>();
@@ -88,11 +106,11 @@ public class Visualizer : MonoBehaviour
         List<Matrix4x4> landMatrices = new List<Matrix4x4>();
 
         var data = await visusClient.RequestVisusDataAsync(
-            quality: -9, 
-            time: 0, 
-            z: new int[] { 0, 1 },
-            x_range: new int[] { 0, 8640 },
-            y_range: new int[] { 0, 6480 }
+            quality: quality, 
+            time: time, 
+            z: z,
+            x_range: xRange,
+            y_range: yRange
         );
 
         // Get the data
@@ -165,9 +183,14 @@ public class Visualizer : MonoBehaviour
         arrowBatches = tempArrowBatches;
         landBatches = tempLandBatches;
 
-        Debug.Log($"Max Speed from batch: {maxSpeed}");
+        // Debug.Log($"Max Speed from batch: {maxSpeed}");
 
-        onLoadingStateChanged?.Invoke(false); 
+        onLoadingStateChanged?.Invoke(false);
+
+        onUpdatedVisuals?.Invoke();
+
+        stopwatch.Stop();
+        UnityEngine.Debug.Log($"Loading took {stopwatch.ElapsedMilliseconds} ms.");
     }
 
     #endregion
