@@ -7,6 +7,7 @@ using UnityEngine.Networking;
 using MessagePack;
 using System.Threading.Tasks;
 using MyBox;
+using UltEvents;
 
 [MessagePackObject]
 public class VisusPayload
@@ -47,6 +48,8 @@ public class VisusClient : MonoBehaviour
 
     const string baseUrl = "http://localhost:5000/";
 
+    #region Mono
+
     void Awake()
     {
         if (Instance == null)
@@ -60,6 +63,10 @@ public class VisusClient : MonoBehaviour
             return;
         }
     }
+
+    #endregion
+
+    #region Public Methods
 
     public async Task<VisusArrays> RequestVisusDataAsync(int quality, int time, int[] z, int[] x_range, int[] y_range)
     {
@@ -92,34 +99,14 @@ public class VisusClient : MonoBehaviour
             }
         };
 
-        return await tcs.Task;
+        VisusArrays rv = await tcs.Task;
 
-        // var operation = request.SendWebRequest();
-
-        // while (!operation.isDone)
-        //     await Task.Yield();
-
-        // if (request.result != UnityWebRequest.Result.Success)
-        //     throw new Exception(request.error);
-
-        // byte[] rawData = request.downloadHandler.data;
-        
-        // VisusPayload payload = MessagePackSerializer.Deserialize<VisusPayload>(rawData);
-        // float[] u = ByteArrayToFloatArray(payload.u_array);
-        // float[] v = ByteArrayToFloatArray(payload.v_array);
-        // float[] w = ByteArrayToFloatArray(payload.w_array);
-
-        // // Debug prints
-        // Debug.Log($"u[0] = {u[0]}");
-        // Debug.Log($"v[0] = {v[0]}");
-        // Debug.Log($"w[0] = {w[0]}");
-
-        // return new VisusArrays(payload.shape, u, v, w);
+        return rv;
     }
 
-    //public VisusArrays RequestVisusData(int quality, int time, int[] z, int[] x_range, int[] y_range) {
-    //    StartCoroutine(RequestVisusData_coroutine(quality, time, z, x_range, y_range));
-    //}
+    #endregion
+
+    #region Private Methods
 
     string BuildQueryUrl(int quality, int time, int[] z, int[] x_range, int[] y_range)
     {
@@ -156,4 +143,6 @@ public class VisusClient : MonoBehaviour
             y_range: new int[] { 0, 200 }
         );
     }
+
+    #endregion
 }
