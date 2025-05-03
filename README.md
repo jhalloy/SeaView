@@ -18,11 +18,11 @@ This project is the 3D visualization of ocean currents contained in the NASA DYA
 
  - **SeaView Unity**: contains the Unity project for visualization
 
- - **SeaView Unity/Assets/Scripts/VisusClient.cs**:
+ - **SeaView Unity/Assets/Scripts/VisusClient.cs**: requests the LLC2160 data from the Python server
 
- - **SeaView Unity/Assets/Scripts/UIManager.cs**:
+ - **SeaView Unity/Assets/Scripts/UIManager.cs**: manages the user interface, including the sliders used to set the parameters
 
- - **SeaView Unity/Assets/Scripts/Visualizer.cs**:
+ - **SeaView Unity/Assets/Scripts/Visualizer.cs**: renders the velocity vectors from the loaded data
 
 ### Installation instructions
 
